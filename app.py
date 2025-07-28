@@ -12,10 +12,37 @@ from datetime import datetime
 from shiny.ui import HTML
 from shinywidgets import output_widget, render_widget
 import shinyswatch
+import base64
+import os
+
+# Function to encode image as base64 for embedding
+def get_logo_base64():
+    logo_path = os.path.join(os.path.dirname(__file__), "logo.svg")
+    try:
+        with open(logo_path, "r", encoding="utf-8") as f:
+            svg_content = f.read()
+        # For SVG, we can embed directly or convert to base64
+        encoded = base64.b64encode(svg_content.encode()).decode()
+        return f"data:image/svg+xml;base64,{encoded}"
+    except FileNotFoundError:
+        # Fallback if logo not found
+        return ""
 
 # Define the UI
 app_ui = ui.page_fluid(
-    ui.panel_title("CuLPy: Ecological Model Visualization - Vidmares"),
+    ui.div(
+        ui.tags.div(
+            ui.tags.img(
+                src=get_logo_base64(),
+                style="height: 60px; margin-right: 15px; vertical-align: middle;"
+            ),
+            ui.tags.h1(
+                "EUTROPY",
+                style="display: inline-block; vertical-align: middle; margin: 0; color: #2c3e50;"
+            ),
+            style="text-align: center; padding: 10px 0; border-bottom: 2px solid #ecf0f1; margin-bottom: 20px;"
+        )
+    ),
     ui.layout_sidebar(
         # Sidebar
         ui.sidebar(
@@ -62,7 +89,7 @@ app_ui = ui.page_fluid(
             ),
             ui.nav_panel("About",
                 ui.tags.div(
-                    ui.tags.h3("CuLPy: Ecological Model Visualization"),
+                    ui.tags.h3("EUTROPY: Ecological Model Visualization"),
                     ui.tags.p("""
                         This application is designed for visualizing and analyzing ecological model outputs,
                         specifically for chlorophyll a concentrations in aquatic systems. It allows comparison
